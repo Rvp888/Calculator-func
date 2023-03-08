@@ -1,33 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, Current, Previous, Screen } from "../Styles/Main";
 
 function Calculator() {
-  const [current, setCurrent] = useState("");
+  const [current, setCurrent] = useState(0);
   const [previous, setPrevious] = useState("");
   const [operations, setOperations] = useState("");
+
+  // useEffect(() => {
+  //   if(current.length == 0){
+  //     setCurrent(0);
+  //   }
+  // }, [current])
 
   const appendvalueHandler = (el) => {
     const value = el.target.getAttribute("data");
     if (value === "." && current.includes(".")) return;
-    setCurrent(current + value);
+    if(current == 0){
+      setCurrent(value);
+    }
+    else if(current){
+      setCurrent(current + value);
+    } 
   };
 
   const deletehandler = () => {
     setCurrent(String(current).slice(0, -1));
+    if(current.length == 1){
+          setCurrent(0);
+    }
   };
 
   const allClearHandler = () => {
-    setCurrent("");
+    setCurrent(0);
     setPrevious("");
     setOperations("");
   };
 
   const chooseOperationHandler = (el) => {
-    if (current === "") return;
-    if (previous !== "") {
+    if (current === "" && previous === "") return;
+    if (previous !== "" && current !== "") {
       let value = compute();
       setPrevious(value);
-    } else {
+    } else if(previous == "") {
       setPrevious(current);
     }
     setCurrent("");
